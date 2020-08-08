@@ -11,5 +11,6 @@ In this project, I try to beat the highest score at the time (~81%). The machine
  You can look for reference in the following links.
  - TF-IDF: [Term frequency-inverse document frequency](http://www.tfidf.com/)
  - SVD: [Singular Value Decomposion](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html)
+ - [K Nearest Neighbors](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html?highlight=nearestneighbor#sklearn.neighbors.NearestNeighbors) 
 ## 4. Result
 With cohen cappa score quadractic, the model yells accuracy 87%. 
