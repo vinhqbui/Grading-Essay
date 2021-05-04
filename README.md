@@ -4,8 +4,8 @@
 ## 1. What is the project?
 The project's data can be found here: https://www.kaggle.com/c/asap-aes. The original project was hosted 8 years ago. In this project, I try to beat the highest score which at the time was ~81%. Machine learning has come a long way from what it was 8 years ago. As such beating the original score does not mean much, but it is still a great project to practice machine learning skills. There are many people who could achieve more than 95% accuracy for this project using neuron network. However, I will not be using neuron network as it is harder to explain how the model produces the result to stakeholders. Instead I will use feature engineering and K-Nearest Neighbors.
 ## 2. Stucture of project
- - Folder Data: there is processed data that I use.
- - Using TFIDF - SVD to predict.ipynb: This is Jupyter Notebook for the projects.
+ - Folder Data: contains the processed data that I use.
+ - Using TFIDF - SVD to predict.ipynb: This is Jupyter Notebook for the project.
 ## 3. Concepts used in this project
  Additional resources can be found by following the links.
  - TF-IDF: [Term frequency-inverse document frequency](http://www.tfidf.com/)
