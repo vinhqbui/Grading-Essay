@@ -51,7 +51,9 @@ content = content.apply(lambda x: StemmingWordList(x))
 x_transform = tfidf.fit_transform(content)
 x_transform = sparse.hstack((x_transform, train_numberOfSentences[:,None]))
 x_transform = sparse.hstack((x_transform, train_numberOfWords[:,None]))
+
 x_transform = SVD_for_S.SVD(x_transform, 80)
+
 x_train = x_transform[:len(train)]
 x_test = x_transform[len(train):]
 neighbors = 8
