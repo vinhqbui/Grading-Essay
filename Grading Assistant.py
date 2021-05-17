@@ -12,7 +12,10 @@ import pandas as pd
 import numpy as np
 import re
 import nltk
+
 import weightedmedianfunc
+import SVD_for_S
+
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier, NearestNeighbors
@@ -28,7 +31,7 @@ def StemmingWordList(arrayList):
     newList = [ps.stem(word) for word in arrayList]
     return ''.join(newList)
 
-svd = TruncatedSVD(n_iter=10, n_components=100)
+svd = TruncatedSVD(n_iter=50, n_components=80)
 tfidf = TfidfVectorizer(min_df = 0.01, max_df=0.85, stop_words='english')
 
 #-----Import data-----#
@@ -51,7 +54,7 @@ x_transform = sparse.hstack((x_transform, train_numberOfWords[:,None]))
 x_transform = svd.fit_transform(x_transform)
 x_train = x_transform[:len(train)]
 x_test = x_transform[len(train):]
-neighbors = 6
+neighbors = 8
 nearestNeighbors = NearestNeighbors(n_neighbors=neighbors)
 nearestNeighbors.fit(x_train)
 test_dist, test_ind = nearestNeighbors.kneighbors(x_test)
