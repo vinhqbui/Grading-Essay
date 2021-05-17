@@ -14,7 +14,7 @@ and the calculations.
 import numpy as np
 import matplotlib.pyplot as plt
 
-def weighted_median(nscores,dist):  
+def weighted_median(nscores,dist, printMode=False):  
     #get weights of each score
     weights = [1/ x for x in dist]
     
@@ -46,10 +46,10 @@ def weighted_median(nscores,dist):
     else:
     	ub = lb
     	high = low
-    	wm = lscore
-    
+    	wm = nscores[low]
+    """
     #this while will allow for users to either print the results if they want
-    while True:
+    while printMode:
         try:
             print("Do you want the results printed?")
             print("Enter: yes or no")
@@ -107,6 +107,6 @@ def weighted_median(nscores,dist):
                  print("Please input a valid response: yes or no.")
         except Exception as e:
                 print(e)     
-    
+    """
     
     return wm
