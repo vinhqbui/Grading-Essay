@@ -46,7 +46,7 @@ def weighted_median(nscores,dist, printMode=False):
     else:
     	ub = lb
     	high = low
-    	wm = lscore
+    	wm = nscores[low]
     """
     #this while will allow for users to either print the results if they want
     while printMode:

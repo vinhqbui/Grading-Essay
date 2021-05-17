@@ -85,7 +85,7 @@ for i in range(0, n):
     for i in test_ind[i]:
         scores_list.append(y_train[i])
       
-    prediction_list.append(weightedmedianfunc.weighted_median(scores_list,dist_list))
+    prediction_list.append(round(weightedmedianfunc.weighted_median(scores_list,dist_list)))
           
 accuracy = cohen_kappa_score(y_test, prediction_list,weights='quadratic') 
-print('Using weighted median', accuracy)
+print('The accuracy of Using weighted median', accuracy)
