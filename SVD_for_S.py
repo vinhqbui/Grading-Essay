@@ -22,17 +22,8 @@ def SVD(matrix, dimension):
     
     #U=evectors1, V=evectors2, S=np.sqrt(D)
     #resize U, V, & S to the r value, to get U', S', & V'
-    U1 = evectors1[0:(np.size(evectors1, 0)), 0:r]
-    V1 = evectors2[0:(np.size(evectors2,0)), 0:r]
+    #U1 = evectors1[0:(np.size(evectors1, 0)), 0:r]
+    #V1 = evectors2[0:(np.size(evectors2,0)), 0:r]
     S1 = np.sqrt(D)[0:r, 0:r]
     
-    print("U': \n", U1, "\n") 
-    print("S': \n",S1, "\n") 
-    print("V': \n", V1)
-    
-    return S1 
-
-A = np.array([[2,4],[1,3],[0,0],[0,0]])
-r = 2
-S2 = SVD(A, r)
-print("S' \n",S2)
+    return S1
