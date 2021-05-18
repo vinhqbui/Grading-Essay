@@ -22,8 +22,9 @@ def SVD(matrix, dimension):
     
     #U=evectors1, V=evectors2, S=np.sqrt(D)
     #resize U, V, & S to the r value, to get U', S', & V'
-    #U1 = evectors1[0:(np.size(evectors1, 0)), 0:r]
-    #V1 = evectors2[0:(np.size(evectors2,0)), 0:r]
+    U1 = evectors1[0:(np.size(evectors1, 0)), 0:r]
+    V1 = evectors2[0:(np.size(evectors2,0)), 0:r]
     S1 = np.sqrt(D)[0:r, 0:r]
     
-    return S1
+    A1 = U1.dot(S1).dot(V1.T).real
+    return A1 #returns just the real part of A'
