@@ -14,9 +14,13 @@ and the calculations.
 import numpy as np
 import matplotlib.pyplot as plt
 
-def weighted_median(nscores,dist, printMode=False):  
+def weighted_median(nscores,dist, printMode=False):
+    wm = 0
     #get weights of each score
-    weights = [1/ x for x in dist]
+    for i in range(len(dist)):
+        if dist[i] == 0:
+            dist[i] = 0.000000000000000000001
+    weights = [1.0/ x for x in dist]
     
     #sum weights to find middle
     middle = 0
@@ -33,7 +37,8 @@ def weighted_median(nscores,dist, printMode=False):
     if lb > middle:
         lb -= (weights[low]+weights[low-1])
         low -= 1
-    
+        
+    ub = 0.0
     #get upper bound and element place of upper bound
     if lb != middle:
     	ub = lb + weights[low] + weights[low+1]
@@ -42,14 +47,17 @@ def weighted_median(nscores,dist, printMode=False):
     	lscore = nscores[low]
     	d = ub - lb
     	t = ub - middle
-    	wm = (uscore*((d-t)/d) + lscore*(t/d))
+    	if d == 0:
+            wm = ub
+    	else:
+            wm = (uscore*((d-t)/d) + lscore*(t/d))
     else:
     	ub = lb
     	high = low
     	wm = nscores[low]
-    """
+    
     #this while will allow for users to either print the results if they want
-    while printMode:
+    if printMode:
         try:
             print("Do you want the results printed?")
             print("Enter: yes or no")
@@ -66,16 +74,14 @@ def weighted_median(nscores,dist, printMode=False):
                 print("   Upper Bound:",uscore,"%")
                 print("   Lower Bound:",lscore,"%")
                 print("   Weighted Median:",round(wm,2))
-                break
-            if resp1 == "no":
-                break
+
             else: 
                 print("Please input a valid response: yes or no.")
         except Exception as e:
                 print(e)
     
     #this while will allow users to print the graph if they want
-    while True:
+    if printMode:
         try:
             print("Would you like the graph of the weighted median printed?")
             print("Enter: yes or no")
@@ -100,13 +106,10 @@ def weighted_median(nscores,dist, printMode=False):
                 plt.legend(bbox_to_anchor=(1.05,.5), ncol= 1)
                 plt.plot([lb,ub],[lscore, uscore], color ="black")
                 plt.show()
-                break
-            if resp2 == "no":
-                break
             else:
                  print("Please input a valid response: yes or no.")
         except Exception as e:
                 print(e)     
-    """
+    
     
     return wm
