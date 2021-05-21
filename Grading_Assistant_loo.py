@@ -11,6 +11,7 @@ Import necessary libaries
 import pandas as pd
 import re
 import nltk
+import math
 
 import weightedmedianfunc
 import SVD_for_S
@@ -53,13 +54,13 @@ def WordNetLemma(arrayList):
 #-----Import data-----#
 train = pd.read_excel('./Data/training_set_rel3_set1.xlsx')
 test = pd.read_excel('./Data/valid_set_set1.xlsx')
-y_train = train['Score']
-y_test = test['Score']
-X = pd.concat([train,test])
+corpus = pd.concat([train,test], ignore_index = True)
+Y = corpus['Score']
+X = corpus["Essay Content"]
 
-train_numberOfSentences = X['Essay Content'].apply(lambda x: len(x.split('.')))
-train_numberOfWords = X['Essay Content'].apply(lambda x: len(x.split()))
-content = X['Essay Content']
+train_numberOfSentences = X.apply(lambda x: len(x.split('.')))
+train_numberOfWords = X.apply(lambda x: len(x.split()))
+content = X
 content = content.apply(lambda x: re.sub('[^a-zA-Z]+', ' ', x))
 content = content.apply(lambda x: x.lower())
 
@@ -67,10 +68,10 @@ content = content.apply(lambda x: WordNetLemma(word_tokenize(x)))
 content = content.apply(lambda x: RemoveStopWords(word_tokenize(x)))
 #content = content.apply(lambda x: SnowballStemmer(word_tokenize(x)))
 
-dimensions = 80
-neighbors = 8
-svd = TruncatedSVD(n_components=dimensions)
-tfidf = TfidfVectorizer(min_df = 0.01, max_df=0.85, stop_words='english')
+dimensions = 100
+neighbors = 5
+#svd = TruncatedSVD(n_components=dimensions)
+tfidf = TfidfVectorizer(min_df = 0.01, max_df=0.90, stop_words='english')
 
 x_transform = tfidf.fit_transform(content)
 x_transform = sparse.hstack((x_transform, train_numberOfSentences[:,None]))
@@ -79,31 +80,29 @@ x_transform = sparse.hstack((x_transform, train_numberOfWords[:,None]))
 x_transform = SVD_for_S.SVD(x_transform.toarray(), dimensions)
 #x_transform = svd.fit_transform(x_transform)
 
-x_train = x_transform[:len(train)]
-x_test = x_transform[len(train):]
 
-nearestNeighbors = NearestNeighbors(n_neighbors=neighbors, algorithm = "brute")
-nearestNeighbors.fit(x_train)
-test_dist, test_ind = nearestNeighbors.kneighbors(x_test)
+nearestNeighbors = NearestNeighbors(n_neighbors=neighbors+1)
+nearestNeighbors.fit(x_transform)
+test_dist, test_ind = nearestNeighbors.kneighbors(x_transform)
 
-#----Using true median----#
+
+#Using regular median
 prediction_list = list()
-for val in test_ind:
-    prediction_list.append(y_train[val[round(neighbors/2)]])
-    
-accuracy = cohen_kappa_score(y_test, prediction_list,weights='quadratic') 
-print('True median', accuracy)
+for item in test_ind:
+    prediction_list.append(round((Y[item[math.floor(neighbors/2.0)+1]]+Y[item[math.ceil(neighbors/2.0)+1]])/2.0))
+accuracy = cohen_kappa_score(Y, prediction_list,weights='quadratic') 
+print('Using vanilla median', accuracy)
 
 #----Using mean score----#
 prediction_list = list()
 for val in test_ind:
     total = 0
-    for i in val:
-        total += y_train[i]
-    avg = round(total / len(val)) 
+    for i in val[1:]:
+        total += Y[i]
+    avg = round(total / (len(val)-1)) 
     prediction_list.append(avg)
 
-accuracy = cohen_kappa_score(y_test, prediction_list,weights='quadratic') 
+accuracy = cohen_kappa_score(Y, prediction_list,weights='quadratic') 
 print('Using mean', accuracy)
 
 #---Using custom weighted----#
@@ -111,12 +110,11 @@ prediction_list = list()
 n = len(test_ind)
 for i in range(0, n):
     scores_list = list()
-    dist_list = test_dist[i]
-    for i in test_ind[i]:
-        scores_list.append(y_train.iloc[i])
-      
+    dist_list = test_dist[i][1:]
+    for j in test_ind[i][1:]:
+        scores_list.append(Y[j])      
     prediction_list.append(round(weightedmedianfunc.weighted_median(scores_list,dist_list)))
           
-accuracy = cohen_kappa_score(y_test, prediction_list,weights='quadratic') 
+accuracy = cohen_kappa_score(Y, prediction_list,weights='quadratic') 
 print('The accuracy of Using weighted median', accuracy)
 
